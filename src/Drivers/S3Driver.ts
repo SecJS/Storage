@@ -10,7 +10,7 @@
 import { S3 } from 'aws-sdk'
 import { File } from '@secjs/utils'
 import { Config } from '@secjs/config'
-import { InternalServerException, NotFoundException } from '@secjs/exceptions'
+import { InternalServerException } from '@secjs/exceptions'
 import { DriverContract } from '../Contracts/DriverContract'
 
 export class S3Driver implements DriverContract {
@@ -55,7 +55,8 @@ export class S3Driver implements DriverContract {
       Body: content,
     }
 
-    if (await this.exists(filePath)) throw new InternalServerException(`File ${filePath} already exists`)
+    if (await this.exists(filePath))
+      throw new InternalServerException(`File ${filePath} already exists`)
 
     await this.s3Client.upload(params).promise()
   }
@@ -148,10 +149,11 @@ export class S3Driver implements DriverContract {
       Bucket: this._bucket,
       Key: filePath,
       // 2 weeks
-      Expires: 121e+6,
+      Expires: 121e6,
     }
 
-    if (await this.missing(filePath)) throw new InternalServerException(`File ${filePath} does not exist`)
+    if (await this.missing(filePath))
+      throw new InternalServerException(`File ${filePath} does not exist`)
 
     return this.s3Client.getSignedUrlPromise('getObject', params)
   }
@@ -170,7 +172,8 @@ export class S3Driver implements DriverContract {
       Expires: time / 1000,
     }
 
-    if (await this.missing(filePath)) throw new InternalServerException(`File ${filePath} does not exist`)
+    if (await this.missing(filePath))
+      throw new InternalServerException(`File ${filePath} does not exist`)
 
     return this.s3Client.getSignedUrlPromise('getObject', params)
   }
@@ -188,7 +191,8 @@ export class S3Driver implements DriverContract {
     }
 
     if (!force) {
-      if (await this.missing(filePath)) throw new InternalServerException(`File ${filePath} does not exist`)
+      if (await this.missing(filePath))
+        throw new InternalServerException(`File ${filePath} does not exist`)
     }
 
     await this.s3Client.deleteObject(params).promise()
@@ -204,10 +208,11 @@ export class S3Driver implements DriverContract {
     const params = {
       Bucket: this._bucket,
       CopySource: `/${this._bucket}/${oldFilePath}`,
-      Key: newFilePath
+      Key: newFilePath,
     }
 
-    if (await this.missing(oldFilePath)) throw new InternalServerException(`File ${oldFilePath} does not exist`)
+    if (await this.missing(oldFilePath))
+      throw new InternalServerException(`File ${oldFilePath} does not exist`)
 
     await this.s3Client.copyObject(params).promise()
   }
@@ -222,12 +227,15 @@ export class S3Driver implements DriverContract {
     const params = {
       Bucket: this._bucket,
       CopySource: `/${this._bucket}/${oldFilePath}`,
-      Key: newFilePath
+      Key: newFilePath,
     }
 
-    if (await this.missing(oldFilePath)) throw new InternalServerException(`File ${oldFilePath} does not exist`)
+    if (await this.missing(oldFilePath))
+      throw new InternalServerException(`File ${oldFilePath} does not exist`)
 
     await this.s3Client.copyObject(params).promise()
-    await this.s3Client.deleteObject({ Bucket: params.Bucket, Key: oldFilePath }).promise()
+    await this.s3Client
+      .deleteObject({ Bucket: params.Bucket, Key: oldFilePath })
+      .promise()
   }
 }

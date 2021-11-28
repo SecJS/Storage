@@ -38,7 +38,8 @@ export class LocalDriver implements DriverContract {
 
     const file = new File(this.concat(filePath), content)
 
-    if (file.originalFileExists) throw new InternalServerException(`File ${filePath} already exists`)
+    if (file.originalFileExists)
+      throw new InternalServerException(`File ${filePath} already exists`)
 
     await file.create()
   }
@@ -87,7 +88,8 @@ export class LocalDriver implements DriverContract {
   async get(filePath: string): Promise<Buffer> {
     const file = new File(this.concat(filePath))
 
-    if (!file.originalFileExists) throw new InternalServerException(`File ${filePath} does not exist`)
+    if (!file.originalFileExists)
+      throw new InternalServerException(`File ${filePath} does not exist`)
 
     return file.getContent()
   }
@@ -100,7 +102,8 @@ export class LocalDriver implements DriverContract {
   async url(filePath: string): Promise<string> {
     const file = new File(this.concat(filePath))
 
-    if (!file.originalFileExists) throw new InternalServerException(`File ${filePath} does not exist`)
+    if (!file.originalFileExists)
+      throw new InternalServerException(`File ${filePath} does not exist`)
 
     return `${this._url}/${file.base}`
   }
@@ -114,9 +117,12 @@ export class LocalDriver implements DriverContract {
   async temporaryUrl(filePath: string, time = 900000): Promise<string> {
     const file = await new File(this.concat(filePath))
 
-    if (!file.originalFileExists) throw new InternalServerException(`File ${filePath} does not exist`)
+    if (!file.originalFileExists)
+      throw new InternalServerException(`File ${filePath} does not exist`)
 
-    const copy = await file.copy(`storage/temp/${filePath}`, { mockedValues: true })
+    const copy = await file.copy(`storage/temp/${filePath}`, {
+      mockedValues: true,
+    })
 
     setTimeout(() => copy.remove(), time)
 
@@ -132,7 +138,8 @@ export class LocalDriver implements DriverContract {
   async delete(filePath: string, force = false): Promise<void> {
     const file = new File(this.concat(filePath))
 
-    if (!file.originalFileExists && !force) throw new InternalServerException(`File ${filePath} does not exist`)
+    if (!file.originalFileExists && !force)
+      throw new InternalServerException(`File ${filePath} does not exist`)
 
     await promises.rm(this.concat(filePath), { force })
   }
@@ -146,7 +153,8 @@ export class LocalDriver implements DriverContract {
   async copy(oldFilePath: string, newFilePath: string): Promise<void> {
     const file = new File(this.concat(oldFilePath))
 
-    if (!file.originalFileExists) throw new InternalServerException(`File ${oldFilePath} does not exist`)
+    if (!file.originalFileExists)
+      throw new InternalServerException(`File ${oldFilePath} does not exist`)
 
     await file.copy(this.concat(newFilePath))
   }
@@ -160,7 +168,8 @@ export class LocalDriver implements DriverContract {
   async move(oldFilePath: string, newFilePath: string): Promise<void> {
     const file = new File(this.concat(oldFilePath))
 
-    if (!file.originalFileExists) throw new InternalServerException(`File ${oldFilePath} does not exist`)
+    if (!file.originalFileExists)
+      throw new InternalServerException(`File ${oldFilePath} does not exist`)
 
     await file.move(this.concat(newFilePath))
   }

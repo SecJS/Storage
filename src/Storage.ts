@@ -12,15 +12,13 @@ import {
   NotImplementedException,
 } from '@secjs/exceptions'
 
-import { isAbsolute } from 'path'
+import { tmpdir } from 'os'
+import { promises } from 'fs'
+import { File } from '@secjs/utils'
 import { Config } from '@secjs/config'
+import { isAbsolute, join } from 'path'
 import { Drivers } from './Drivers/Drivers'
 import { DriverContract } from './Contracts/DriverContract'
-import { File, random } from '@secjs/utils'
-import { promises } from 'fs'
-import { join } from 'path'
-import { tmpdir } from 'os'
-import { Env } from '@secjs/env'
 
 export class Storage {
   private _tempDriver: DriverContract | null = null
@@ -88,12 +86,20 @@ export class Storage {
     this._tempDriver = null
   }
 
-  async putFile(folder: string, content: any, extension: string): Promise<string> {
+  async putFile(
+    folder: string,
+    content: any,
+    extension: string,
+  ): Promise<string> {
     Storage.verifyAbsolute(folder)
 
     const tmpDir = await promises.mkdtemp(join(tmpdir(), process.env.APP_NAME))
 
-    const file = await new File(`${tmpDir}/mock.${extension}`, content, true).create()
+    const file = await new File(
+      `${tmpDir}/mock.${extension}`,
+      content,
+      true,
+    ).create()
 
     const path = await this._driver.putFile(folder, file)
     await file.remove()

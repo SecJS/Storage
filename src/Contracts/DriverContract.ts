@@ -9,10 +9,6 @@
 
 import { File } from '@secjs/utils'
 
-interface DriverConstructor {
-  new (disk: string, ...args): DriverContract
-}
-
 export interface DriverContract {
   /**
    * Put method
@@ -91,4 +87,8 @@ export interface DriverContract {
   move(oldFilePath: string, newFilePath: string): Promise<void>
 }
 
-declare var DriverContract: DriverConstructor;
+interface DriverConstructor {
+  new (disk: string, ...args): DriverContract
+}
+
+declare let DriverContract: DriverConstructor

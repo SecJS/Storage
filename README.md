@@ -212,9 +212,9 @@ export default {
 const name = 'custom'
 const driver = CustomDriver
 
-Storage.build('custom', CustomDriver)
+Storage.build(name, driver)
 
-console.log(Storage.drivers) // ['s3', 'local', 'custom']
+console.log(Storage.drivers) // ['s3', 'local', 'public', 'custom']
 ```
 
 > Now, if you have implemented your disk in config/filesystem, you can use him inside storage

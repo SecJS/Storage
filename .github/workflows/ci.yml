@@ -29,3 +29,11 @@ jobs:
 
       - name: Run the tests from project
         run: npm run test
+        env:
+          APP_NAME: SecJS
+          APP_URL: https://cdn.secjs.io
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_KEY: ${{ secrets.AWS_KEY }}
+          AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
+          AWS_SECRET: ${{ secrets.AWS_SECRET }}
+          AWS_ENDPOINT: ${{ secrets.AWS_ENDPOINT }}

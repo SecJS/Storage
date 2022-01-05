@@ -23,14 +23,14 @@ export class S3Driver implements DriverContract {
   private readonly _bucket: string
   private readonly _endpoint: string
 
-  constructor(disk: string) {
+  constructor(disk: string, configs: any = {}) {
     const s3Config = Config.get(`filesystem.disks.${disk}`)
 
-    this._key = s3Config.key
-    this._region = s3Config.region
-    this._secret = s3Config.secret
-    this._bucket = s3Config.bucket
-    this._endpoint = s3Config.endpoint
+    this._key = configs.key || s3Config.key
+    this._region = configs.region || s3Config.region
+    this._secret = configs.secret || s3Config.secret
+    this._bucket = configs.bucket || s3Config.bucket
+    this._endpoint = configs.endpoint || s3Config.endpoint
 
     this.s3Client = new S3({
       region: this._region,

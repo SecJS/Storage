@@ -111,6 +111,20 @@ describe('\n Storage Local Class', () => {
     expect(existsSync(copyPath)).toBe(true)
   })
 
+  it('should add, remove and reset new configs to drivers', async () => {
+    storage.addConfig('root', Path.storage('newApp/local'))
+
+    await storage.put('local.txt', bigContent)
+
+    expect(existsSync(Path.storage('newApp/local/local.txt'))).toBe(true)
+
+    await storage.removeConfig('root').put('local.txt', bigContent)
+
+    expect(existsSync(Path.storage('app/local/local.txt'))).toBe(true)
+
+    await promises.rmdir(Path.storage('newApp'), { recursive: true })
+  })
+
   afterEach(async () => {
     await promises.rmdir(Path.storage('app/local'), { recursive: true })
   })

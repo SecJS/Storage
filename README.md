@@ -76,12 +76,12 @@ export default {
   disks: {
     local: {
       driver: 'local',
-      root: Path.storage('app'),
+      root: Path.noBuild().storage('app'),
       url: `${Env('APP_URL', '')}/storage`,
     },
     public: {
       driver: 'local',
-      root: Path.storage('app/public'),
+      root: Path.noBuild().storage('app/public'),
       url: `${Env('APP_URL', '')}/storage/public`,
     },
     s3: {
@@ -144,6 +144,28 @@ await storage.copy('folder/DASdsakdjas912831jhdasnm.txt', 'folder/test/copy.txt'
 
 // In this case folder/DASdsakdjas912831jhdasnm.txt will be removed
 await storage.move('folder/DASdsakdjas912831jhdasnm.txt', 'folder/test/move.txt')
+```
+
+### Subscribing configs of disks in runtime
+
+> You can subscribe the disks configs in runtime using addConfig, removeConfig and resetConfig methods
+
+```ts
+// File created on storage/newAppFolder/file.txt
+storage
+  .addConfig('root', Path.noBuild().storage('newAppFolder'))
+  .put('file.txt', Buffer.from('Hello World'))
+
+// Will use the default: storage/app/file.txt
+storage
+  .removeConfig('root')
+  .put('file.txt', Buffer.from('Hello World'))
+
+// resetConfig removes all the configs from the Storage instance
+// Will use the default: storage/app/file.txt
+storage
+  .resetConfigs()
+  .put('file.txt', Buffer.from('Hello World'))
 ```
 
 ### Using S3 disk

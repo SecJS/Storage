@@ -29,12 +29,12 @@ export default {
   disks: {
     local: {
       driver: 'local',
-      root: Path.storage('app'),
+      root: Path.noBuild().storage('app'),
       url: `${Env('APP_URL', '')}/storage`,
     },
     public: {
       driver: 'local',
-      root: Path.storage('app/public'),
+      root: Path.noBuild().storage('app/public'),
       url: `${Env('APP_URL', '')}/storage/public`,
     },
     s3: {
@@ -43,7 +43,7 @@ export default {
       secret: Env('AWS_SECRET', ''),
       region: Env('AWS_REGION', ''),
       bucket: Env('AWS_BUCKET', ''),
-      endpoint: Env('AWS_ENDPOINT', '')
-    }
+      endpoint: Env('AWS_ENDPOINT', ''),
+    },
   },
 }

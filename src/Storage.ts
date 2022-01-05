@@ -21,10 +21,14 @@ import { Drivers } from './Drivers/Drivers'
 import { DriverContract } from './Contracts/DriverContract'
 
 export class Storage {
+  private configs: any = {}
   private _tempDriver: DriverContract | null = null
   private _defaultDriver: DriverContract | null = null
 
-  static build(name: string, driver: new (disk: string) => DriverContract) {
+  static build(
+    name: string,
+    driver: new (disk: string, configs?: any) => DriverContract,
+  ) {
     if (Drivers[name])
       throw new InternalServerException(`Driver ${name} already exists`)
 
@@ -42,6 +46,48 @@ export class Storage {
     this._defaultDriver = new Drivers[diskConfig.driver](defaultDisk)
   }
 
+  resetConfigs(): Storage {
+    this.configs = {}
+
+    const defaultDisk = Config.get('filesystem.default')
+    const diskConfig = Config.get(`filesystem.disks.${defaultDisk}`)
+
+    this._defaultDriver = new Drivers[diskConfig.driver](
+      defaultDisk,
+      this.configs,
+    )
+
+    return this
+  }
+
+  removeConfig(key: string): Storage {
+    delete this.configs[key]
+
+    const defaultDisk = Config.get('filesystem.default')
+    const diskConfig = Config.get(`filesystem.disks.${defaultDisk}`)
+
+    this._defaultDriver = new Drivers[diskConfig.driver](
+      defaultDisk,
+      this.configs,
+    )
+
+    return this
+  }
+
+  addConfig(key: string, value: any): Storage {
+    this.configs[key] = value
+
+    const defaultDisk = Config.get('filesystem.default')
+    const diskConfig = Config.get(`filesystem.disks.${defaultDisk}`)
+
+    this._defaultDriver = new Drivers[diskConfig.driver](
+      defaultDisk,
+      this.configs,
+    )
+
+    return this
+  }
+
   changeDefaultDisk(disk: string): Storage {
     const diskConfig = Config.get(`filesystem.disks.${disk}`)
 
@@ -55,7 +101,7 @@ export class Storage {
         `Driver ${diskConfig.driver} does not exist, use Storage.build method to create a new driver`,
       )
 
-    this._defaultDriver = new Drivers[diskConfig.driver](disk)
+    this._defaultDriver = new Drivers[diskConfig.driver](disk, this.configs)
 
     return this
   }
@@ -73,7 +119,7 @@ export class Storage {
         `Driver ${diskConfig.driver} does not exist, use Storage.build method to create a new driver`,
       )
 
-    this._tempDriver = new Drivers[diskConfig.driver](disk)
+    this._tempDriver = new Drivers[diskConfig.driver](disk, this.configs)
 
     return this
   }

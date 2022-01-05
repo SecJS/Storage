@@ -17,9 +17,9 @@ export class LocalDriver implements DriverContract {
   private readonly _url: string
   private readonly _root: string
 
-  constructor(disk: string) {
-    this._url = Config.get(`filesystem.disks.${disk}.url`)
-    this._root = Config.get(`filesystem.disks.${disk}.root`)
+  constructor(disk: string, configs: any = {}) {
+    this._url = configs.url || Config.get(`filesystem.disks.${disk}.url`)
+    this._root = configs.root || Config.get(`filesystem.disks.${disk}.root`)
   }
 
   private concat(filePath: string) {

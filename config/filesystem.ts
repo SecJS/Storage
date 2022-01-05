@@ -48,7 +48,7 @@ export default {
       secret: Env('AWS_SECRET', ''),
       region: Env('AWS_REGION', ''),
       bucket: Env('AWS_BUCKET', ''),
-      endpoint: Env('AWS_ENDPOINT', '')
-    }
+      endpoint: Env('AWS_ENDPOINT', ''),
+    },
   },
 }

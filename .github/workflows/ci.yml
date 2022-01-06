@@ -28,7 +28,7 @@ jobs:
         run: npm run lint:fix
 
       - name: Create GCS Credential file to run tests
-        run: echo ${{ secrets.GCS_FILE_CONTENT }} | base64 | base64 -d > gcs-credentials.json
+        run: echo ${{ secrets.GCS_FILE_CONTENT }} > gcs-credentials.json
 
       - name: Run the tests from project
         run: npm run test

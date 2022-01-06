@@ -1,4 +1,4 @@
-/*
+/**
  * @secjs/storage
  *
  * (c) João Lenon <lenon@secjs.com.br>
@@ -8,9 +8,11 @@
  */
 
 import { S3Driver } from './S3Driver'
+import { GCSDriver } from './GCSDriver'
 import { LocalDriver } from './LocalDriver'
 
 export const Drivers = {
   s3: S3Driver,
+  gcs: GCSDriver,
   local: LocalDriver,
 }

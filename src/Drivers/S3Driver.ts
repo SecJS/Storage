@@ -1,4 +1,4 @@
-/*
+/**
  * @secjs/storage
  *
  * (c) João Lenon <lenon@secjs.com.br>

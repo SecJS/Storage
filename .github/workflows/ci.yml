@@ -28,7 +28,7 @@ jobs:
         run: npm run lint:fix
 
       - name: Run the tests from project
-        run: npm run test
+        run: echo ${{ secrets.GCS_FILE_CONTENT }} > gcs-credentials.json && npm run test
         env:
           APP_NAME: SecJS
           APP_URL: https://cdn.secjs.io
@@ -37,3 +37,7 @@ jobs:
           AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
           AWS_SECRET: ${{ secrets.AWS_SECRET }}
           AWS_ENDPOINT: ${{ secrets.AWS_ENDPOINT }}
+          GCS_BUCKET: ${{ secrets.GCS_BUCKET }}
+          GCS_ENDPOINT: ${{ secrets.GCS_ENDPOINT }}
+          GCS_PROJECT: ${{ secrets.GCS_PROJECT }}
+          GCS_SECRET: ${{ secrets.GCS_SECRET }}

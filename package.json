@@ -1,6 +1,6 @@
 {
   "name": "@secjs/storage",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Handle your application files in Node.js",
   "license": "MIT",
   "author": "João Lenon <lenon@secjs.com.br>",
@@ -164,6 +164,7 @@
     }
   },
   "dependencies": {
+    "@google-cloud/storage": "^5.16.1",
     "aws-sdk": "2.1037.0",
     "mime-types": "2.1.34"
   }

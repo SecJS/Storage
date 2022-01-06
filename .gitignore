@@ -129,3 +129,4 @@ dist
 build
 
 storage
+gcs-credentials.json

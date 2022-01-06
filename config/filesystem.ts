@@ -50,5 +50,12 @@ export default {
       bucket: Env('AWS_BUCKET', ''),
       endpoint: Env('AWS_ENDPOINT', ''),
     },
+    gcs: {
+      driver: 'gcs',
+      project: Env('GCS_PROJECT', ''),
+      secret: Env('GCS_SECRET', ''),
+      bucket: Env('GCS_BUCKET', ''),
+      endpoint: Env('GCS_ENDPOINT', ''),
+    },
   },
 }

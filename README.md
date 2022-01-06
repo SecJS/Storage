@@ -91,7 +91,14 @@ export default {
       region: Env('AWS_REGION', ''),
       bucket: Env('AWS_BUCKET', ''),
       endpoint: Env('AWS_ENDPOINT', '')
-    }
+    },
+    gcs: {
+      driver: 'gcs',
+      project: Env('GCS_PROJECT', ''),
+      secret: Env('GCS_SECRET', ''),
+      bucket: Env('GCS_BUCKET', ''),
+      endpoint: Env('GCS_ENDPOINT', ''),
+    },
   },
 }
 ```
@@ -168,9 +175,9 @@ storage
   .put('file.txt', Buffer.from('Hello World'))
 ```
 
-### Using S3 disk
+### Using S3 or GCS disk
 
-> You can use s3 disk to make all this actions inside your s3 bucket
+> You can use **s3** or **gcs** disk to make all this actions inside buckets
 
 ```ts
 storage.disk('s3').put('folder/file.txt', Buffer.from('Hello world!'))
@@ -179,10 +186,32 @@ storage.disk('s3').put('folder/file.txt', Buffer.from('Hello world!'))
 > It could be a little repetitive calling disk all the time, so you can change the default disk for that storage instance
 
 ```ts
-storage.changeDefaultDisk('s3')
+storage.changeDefaultDisk('gcs')
 
-// All actions will be using s3 disk
+// All storage actions of this instance will use gcs from now on
 storage.put('folder/file.txt', Buffer.from('Hello world!'))
+```
+
+> Be careful with **addConfig**, **removeConfig** and **resetConfig** because they create a new instance
+> of the default driver you are using, if you want to subscribe some config and use a different disk,
+> use this methods first, example:
+
+```ts
+proccess.env.FILESYSTEM_DISK = 'local'
+
+// BAD!!!!!
+// This will create the file using local disk
+storage
+  .disk('s3')
+  .addConfig('bucket', 'test-bucket')
+  .put('file.txt', Buffer.from('Hello World'))
+
+// GOOD!!!!!
+// This will create the file using s3 disk
+storage
+  .addConfig('bucket', 'test-bucket')
+  .disk('s3')
+  .put('file.txt', Buffer.from('Hello World'))
 ```
 
 ### Extending disks and drivers

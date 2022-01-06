@@ -63,15 +63,6 @@ describe('\n Storage GCS Class', () => {
     expect(await storage.exists('testing/copy-of-testing.txt')).toBe(true)
   }, 10000)
 
-  it('should move the file', async () => {
-    await storage.put(name, bigContent)
-
-    await storage.move(name, 'testing/move-of-testing.txt')
-
-    expect(await storage.exists(name)).toBe(false)
-    expect(await storage.exists('testing/move-of-testing.txt')).toBe(true)
-  }, 10000)
-
   afterEach(async () => {
     await storage.delete(name, true)
     await storage.delete('testing/move-of-testing.txt', true)

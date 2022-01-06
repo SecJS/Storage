@@ -16,12 +16,6 @@ describe('\n Storage GCS Class', () => {
     storage = new Storage().changeDefaultDisk('gcs')
   })
 
-  it('should store a file in the s3 bucket disk', async () => {
-    await storage.put(name, bigContent)
-
-    expect(await storage.exists(name)).toBe(true)
-  }, 10000)
-
   it('should store a brand new file', async () => {
     const path = await storage.putFile('unique-ids', bigContent, 'txt')
 
@@ -30,26 +24,6 @@ describe('\n Storage GCS Class', () => {
     expect(readdirSync(tmpPath).length).toBe(0)
     expect(await storage.exists(path)).toBe(true)
   })
-
-  it('should verify if file exists or is missing', async () => {
-    await storage.put(name, bigContent)
-
-    expect(await storage.exists(name)).toBe(true)
-    expect(await storage.exists('no-exist.txt')).toBe(false)
-    expect(await storage.missing('no-exist.txt')).toBe(true)
-
-    try {
-      // Absolute path
-      await storage.exists('/home/testing.txt')
-    } catch (error) {
-      expect(error.name).toBe('InternalServerException')
-      expect(error.status).toBe(500)
-      expect(error.isSecJsException).toBe(true)
-      expect(error.content).toBe(
-        'The path /home/testing.txt is an absolute path. Only file names and sub paths can be used within storage class',
-      )
-    }
-  }, 10000)
 
   it('should get the file content in buffer', async () => {
     await storage.put(name, bigContent)

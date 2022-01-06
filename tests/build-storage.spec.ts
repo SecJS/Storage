@@ -50,7 +50,7 @@ describe('\n Build Drive Storage Class', () => {
     expect(existsSync(filePath)).toBe(true)
     expect(url).toBe('https://cdn.secjs.io/storage/lib/build.txt')
 
-    expect(Storage.drivers).toStrictEqual(['s3', 'local', 'lib'])
+    expect(Storage.drivers).toStrictEqual(['s3', 'gcs', 'local', 'lib'])
   })
 
   afterEach(async () => {

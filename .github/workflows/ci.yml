@@ -27,6 +27,9 @@ jobs:
       - name: Verify project lint and try to fix it
         run: npm run lint:fix
 
+      - name: Create GCS Credential file to run tests
+        run: echo ${{ secrets.GCS_FILE_CONTENT }} | base64 -d > gcs-credentials.json
+
       - name: Run the tests from project
         run: npm run test
         env:
@@ -37,3 +40,7 @@ jobs:
           AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
           AWS_SECRET: ${{ secrets.AWS_SECRET }}
           AWS_ENDPOINT: ${{ secrets.AWS_ENDPOINT }}
+          GCS_BUCKET: ${{ secrets.GCS_BUCKET }}
+          GCS_ENDPOINT: ${{ secrets.GCS_ENDPOINT }}
+          GCS_PROJECT: ${{ secrets.GCS_PROJECT }}
+          GCS_SECRET: ${{ secrets.GCS_SECRET }}

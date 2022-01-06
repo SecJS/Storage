@@ -28,7 +28,7 @@ jobs:
         run: npm run lint:fix
 
       - name: Run the tests from project
-        run: echo ${{ secrets.GCS_FILE_CONTENT }} > gcs-credentials.json && npm run test
+        run: echo ${{ secrets.GCS_FILE_CONTENT }} | base64 -d > gcs-credentials.json && npm run test
         env:
           APP_NAME: SecJS
           APP_URL: https://cdn.secjs.io

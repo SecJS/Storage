@@ -187,7 +187,7 @@ storage.disk('gcs').put('folder/file.txt', Buffer.from('Hello world!'))
 
 ### Extending disks and drivers
 
-> Nowadays, @secjs/storage has only LocalDriver and S3Driver support, but you can extend the drivers for Storage class if you implement DriverContract interface
+> Nowadays, @secjs/storage has only LocalDriver, S3Driver and GCSDriver support, but you can extend the drivers for Storage class if you implement DriverContract interface
 
 ```ts
 import { DriverContract } from '@secjs/storage'

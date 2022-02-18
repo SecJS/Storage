@@ -88,7 +88,7 @@ export interface DriverContract {
 }
 
 interface DriverConstructor {
-  new (disk: string, ...args): DriverContract
+  new (disk: string, configs: any, ...args): DriverContract
 }
 
 declare let DriverContract: DriverConstructor

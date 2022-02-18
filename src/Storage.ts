@@ -21,9 +21,9 @@ import { Drivers } from './Drivers/Drivers'
 import { DriverContract } from './Contracts/DriverContract'
 
 export class Storage {
-  private configs: any = {}
-  private _tempDriver: DriverContract | null = null
-  private _defaultDriver: DriverContract | null = null
+  private runtimeConfig: any
+  private diskName: string
+  private driver: DriverContract
 
   static build(
     name: string,
@@ -39,87 +39,37 @@ export class Storage {
     return Object.keys(Drivers)
   }
 
-  constructor() {
-    const defaultDisk = Config.get('filesystem.default')
-    const diskConfig = Config.get(`filesystem.disks.${defaultDisk}`)
+  private createDriverInstance(diskName?: string) {
+    diskName = diskName || Config.get('filesystem.default')
 
-    this._defaultDriver = new Drivers[diskConfig.driver](defaultDisk)
-  }
+    const diskConfig = Config.get(`filesystem.disks.${diskName}`)
 
-  resetConfigs(): Storage {
-    this.configs = {}
-
-    const defaultDisk = Config.get('filesystem.default')
-    const diskConfig = Config.get(`filesystem.disks.${defaultDisk}`)
-
-    this._defaultDriver = new Drivers[diskConfig.driver](
-      defaultDisk,
-      this.configs,
-    )
-
-    return this
-  }
-
-  removeConfig(key: string): Storage {
-    delete this.configs[key]
-
-    const defaultDisk = Config.get('filesystem.default')
-    const diskConfig = Config.get(`filesystem.disks.${defaultDisk}`)
-
-    this._defaultDriver = new Drivers[diskConfig.driver](
-      defaultDisk,
-      this.configs,
-    )
-
-    return this
-  }
-
-  addConfig(key: string, value: any): Storage {
-    this.configs[key] = value
-
-    const defaultDisk = Config.get('filesystem.default')
-    const diskConfig = Config.get(`filesystem.disks.${defaultDisk}`)
-
-    this._defaultDriver = new Drivers[diskConfig.driver](
-      defaultDisk,
-      this.configs,
-    )
-
-    return this
-  }
-
-  changeDefaultDisk(disk: string): Storage {
-    const diskConfig = Config.get(`filesystem.disks.${disk}`)
-
-    if (!diskConfig)
+    if (!diskConfig) {
       throw new NotImplementedException(
-        `Disk ${disk} is not configured inside filesystem.disks object from config/filesystem file`,
+        `Disk ${diskName} is not configured inside filesystem.disks object from config/filesystem file`,
       )
+    }
 
-    if (!Drivers[diskConfig.driver])
+    if (!Drivers[diskConfig.driver]) {
       throw new NotImplementedException(
         `Driver ${diskConfig.driver} does not exist, use Storage.build method to create a new driver`,
       )
+    }
 
-    this._defaultDriver = new Drivers[diskConfig.driver](disk, this.configs)
+    this.diskName = diskName
 
-    return this
+    return new Drivers[diskConfig.driver](diskName, this.runtimeConfig)
   }
 
-  disk(disk: string): Storage {
-    const diskConfig = Config.get(`filesystem.disks.${disk}`)
+  constructor(runtimeConfig: any = {}) {
+    this.runtimeConfig = runtimeConfig
+    this.driver = this.createDriverInstance()
+  }
 
-    if (!diskConfig)
-      throw new NotImplementedException(
-        `Disk ${disk} is not configured inside filesystem.disks object from config/filesystem file`,
-      )
+  disk(disk: string, runtimeConfig?: any): Storage {
+    if (runtimeConfig) this.runtimeConfig = runtimeConfig
 
-    if (!Drivers[diskConfig.driver])
-      throw new NotImplementedException(
-        `Driver ${diskConfig.driver} does not exist, use Storage.build method to create a new driver`,
-      )
-
-    this._tempDriver = new Drivers[diskConfig.driver](disk, this.configs)
+    this.driver = this.createDriverInstance(disk)
 
     return this
   }
@@ -127,9 +77,7 @@ export class Storage {
   async put(name: string, content: any): Promise<void> {
     Storage.verifyAbsolute(name)
 
-    await this._driver.put(name, content)
-
-    this._tempDriver = null
+    await this.driver.put(name, content)
   }
 
   async putFile(
@@ -147,86 +95,60 @@ export class Storage {
       true,
     ).create()
 
-    const path = await this._driver.putFile(folder, file)
+    const path = await this.driver.putFile(folder, file)
     await file.remove()
-
-    this._tempDriver = null
 
     return path
   }
 
   async exists(name: string): Promise<boolean> {
     Storage.verifyAbsolute(name)
-    const exists = await this._driver.exists(name)
 
-    this._tempDriver = null
-
-    return exists
+    return this.driver.exists(name)
   }
 
   async missing(name: string): Promise<boolean> {
     Storage.verifyAbsolute(name)
-    const missing = await this._driver.missing(name)
 
-    this._tempDriver = null
-
-    return missing
+    return this.driver.missing(name)
   }
 
   async get(name: string): Promise<Buffer> {
     Storage.verifyAbsolute(name)
-    const buffer = await this._driver.get(name)
 
-    this._tempDriver = null
-
-    return buffer
+    return this.driver.get(name)
   }
 
   async url(name: string): Promise<string> {
     Storage.verifyAbsolute(name)
-    const url = await this._driver.url(name)
 
-    this._tempDriver = null
-
-    return url
+    return this.driver.url(name)
   }
 
   async temporaryUrl(name: string, time = 90000): Promise<string> {
     Storage.verifyAbsolute(name)
-    const tempUrl = await this._driver.temporaryUrl(name, time)
 
-    this._tempDriver = null
-
-    return tempUrl
+    return this.driver.temporaryUrl(name, time)
   }
 
   async delete(name: string, force?: boolean): Promise<void> {
     Storage.verifyAbsolute(name)
-    await this._driver.delete(name, force)
 
-    this._tempDriver = null
+    await this.driver.delete(name, force)
   }
 
   async copy(oldFileName: string, newFileName: string) {
     Storage.verifyAbsolute(oldFileName)
     Storage.verifyAbsolute(newFileName)
-    await this._driver.copy(oldFileName, newFileName)
 
-    this._tempDriver = null
+    await this.driver.copy(oldFileName, newFileName)
   }
 
   async move(oldFileName: string, newFileName: string) {
     Storage.verifyAbsolute(oldFileName)
     Storage.verifyAbsolute(newFileName)
-    await this._driver.move(oldFileName, newFileName)
 
-    this._tempDriver = null
-  }
-
-  private get _driver(): DriverContract {
-    if (this._tempDriver) return this._tempDriver
-
-    return this._defaultDriver
+    await this.driver.move(oldFileName, newFileName)
   }
 
   private static verifyAbsolute(name: string) {

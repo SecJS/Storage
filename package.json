@@ -1,6 +1,6 @@
 {
   "name": "@secjs/storage",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Handle your application files in Node.js",
   "license": "MIT",
   "author": "João Lenon <lenon@secjs.com.br>",
@@ -24,7 +24,7 @@
     "@secjs/env": "1.2.5",
     "@secjs/exceptions": "1.0.4",
     "@secjs/logger": "1.2.2",
-    "@secjs/utils": "1.5.8",
+    "@secjs/utils": "1.6.9",
     "@types/jest": "27.0.1",
     "@types/mime-types": "2.1.1",
     "@types/node": "14.17.0",

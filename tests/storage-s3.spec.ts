@@ -13,7 +13,7 @@ describe('\n Storage S3 Class', () => {
   beforeEach(async () => {
     await new Config().load()
 
-    storage = new Storage().changeDefaultDisk('s3')
+    storage = new Storage().disk('s3')
   })
 
   it('should store a file in the s3 bucket disk', async () => {

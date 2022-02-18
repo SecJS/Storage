@@ -13,7 +13,7 @@ describe('\n Storage GCS Class', () => {
   beforeEach(async () => {
     await new Config().load()
 
-    storage = new Storage().changeDefaultDisk('gcs')
+    storage = new Storage().disk('gcs')
   })
 
   it('should store a brand new file', async () => {

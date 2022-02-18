@@ -1,7 +1,7 @@
-import { existsSync, promises } from 'fs'
+import { existsSync } from 'fs'
 import { Config } from '@secjs/config'
 import { Storage } from '../src/Storage'
-import { Path } from '@secjs/utils'
+import { Folder, Path } from '@secjs/utils'
 import { LocalDriver } from '../src/Drivers/LocalDriver'
 
 describe('\n Build Drive Storage Class', () => {
@@ -54,6 +54,6 @@ describe('\n Build Drive Storage Class', () => {
   })
 
   afterEach(async () => {
-    await promises.rmdir(Path.storage('app/lib'), { recursive: true })
+    await Folder.safeRemove(Path.storage('app/lib'))
   })
 })

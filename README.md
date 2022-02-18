@@ -155,24 +155,23 @@ await storage.move('folder/DASdsakdjas912831jhdasnm.txt', 'folder/test/move.txt'
 
 ### Subscribing configs of disks in runtime
 
-> You can subscribe the disks configs in runtime using addConfig, removeConfig and resetConfig methods
+> You can subscribe the disks configs in runtime using in Storage constructor or disk method
 
 ```ts
+// Using disk method approach
 // File created on storage/newAppFolder/file.txt
 storage
-  .addConfig('root', Path.noBuild().storage('newAppFolder'))
+  .disk('local', { root: Path.noBuild().storage('newAppFolder') })
   .put('file.txt', Buffer.from('Hello World'))
 
-// Will use the default: storage/app/file.txt
-storage
-  .removeConfig('root')
-  .put('file.txt', Buffer.from('Hello World'))
+// Using constructor method approach
+const newStorage = new Storage({ root: Path.noBuild().storage('newAppFolder') })
 
-// resetConfig removes all the configs from the Storage instance
-// Will use the default: storage/app/file.txt
-storage
-  .resetConfigs()
-  .put('file.txt', Buffer.from('Hello World'))
+// File created on storage/newAppFolder/file2.txt
+newStorage.put('file2.txt', Buffer.from('Hello World'))
+
+// You can reset configs using an empty object in the disk method
+storage.disk('local', {}) // Clear the runtime configuration
 ```
 
 ### Using S3 or GCS disk
@@ -180,43 +179,15 @@ storage
 > You can use **s3** or **gcs** disk to make all this actions inside buckets
 
 ```ts
+// Saves to S3
 storage.disk('s3').put('folder/file.txt', Buffer.from('Hello world!'))
-```
-
-> It could be a little repetitive calling disk all the time, so you can change the default disk for that storage instance
-
-```ts
-storage.changeDefaultDisk('gcs')
-
-// All storage actions of this instance will use gcs from now on
-storage.put('folder/file.txt', Buffer.from('Hello world!'))
-```
-
-> Be careful with **addConfig**, **removeConfig** and **resetConfig** because they create a new instance
-> of the default driver you are using, if you want to subscribe some config and use a different disk,
-> use this methods first, example:
-
-```ts
-proccess.env.FILESYSTEM_DISK = 'local'
-
-// BAD!!!!!
-// This will create the file using local disk
-storage
-  .disk('s3')
-  .addConfig('bucket', 'test-bucket')
-  .put('file.txt', Buffer.from('Hello World'))
-
-// GOOD!!!!!
-// This will create the file using s3 disk
-storage
-  .addConfig('bucket', 'test-bucket')
-  .disk('s3')
-  .put('file.txt', Buffer.from('Hello World'))
+// Saves to GCS
+storage.disk('gcs').put('folder/file.txt', Buffer.from('Hello world!'))
 ```
 
 ### Extending disks and drivers
 
-> Nowadays, @secjs/storage has only LocalDriver and S3Driver support, but you can extend the drivers for Storage class if you implement DriverContract interface
+> Nowadays, @secjs/storage has only LocalDriver, S3Driver and GCSDriver support, but you can extend the drivers for Storage class if you implement DriverContract interface
 
 ```ts
 import { DriverContract } from '@secjs/storage'

@@ -1,6 +1,6 @@
 import { Config } from '@secjs/config'
 import { Storage } from '../src/Storage'
-import { Path, sleep } from '@secjs/utils'
+import { Folder, Path, sleep } from '@secjs/utils'
 import { existsSync, promises, readdirSync } from 'fs'
 import { join } from 'path'
 import { tmpdir } from 'os'
@@ -111,21 +111,19 @@ describe('\n Storage Local Class', () => {
     expect(existsSync(copyPath)).toBe(true)
   })
 
-  it('should add, remove and reset new configs to drivers', async () => {
-    storage.addConfig('root', Path.storage('newApp/local'))
-
-    await storage.put('local.txt', bigContent)
+  it('should be able to recreate driver instance with runtime configs', async () => {
+    await storage.disk('local', { root: Path.storage('newApp/local') }).put('local.txt', bigContent)
 
     expect(existsSync(Path.storage('newApp/local/local.txt'))).toBe(true)
 
-    await storage.removeConfig('root').put('local.txt', bigContent)
+    await storage.disk('local', {}).put('local.txt', bigContent)
 
     expect(existsSync(Path.storage('app/local/local.txt'))).toBe(true)
 
-    await promises.rmdir(Path.storage('newApp'), { recursive: true })
+    await Folder.safeRemove(Path.storage('newApp'))
   })
 
   afterEach(async () => {
-    await promises.rmdir(Path.storage('app/local'), { recursive: true })
+    await Folder.safeRemove(Path.storage('app/local'))
   })
 })

@@ -14,9 +14,8 @@ import {
 
 import { tmpdir } from 'os'
 import { promises } from 'fs'
-import { File } from '@secjs/utils'
-import { Config } from '@secjs/config'
 import { isAbsolute, join } from 'path'
+import { File, Config, Path } from '@secjs/utils'
 import { Drivers } from './Drivers/Drivers'
 import { DriverContract } from './Contracts/DriverContract'
 
@@ -62,6 +61,8 @@ export class Storage {
   }
 
   constructor(runtimeConfig: any = {}) {
+    new Config().safeLoad(Path.config('filesystem'))
+
     this.runtimeConfig = runtimeConfig
     this.driver = this.createDriverInstance()
   }

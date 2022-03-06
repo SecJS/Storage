@@ -1,9 +1,8 @@
-import { Config } from '@secjs/config'
+import { tmpdir } from 'os'
+import { join } from 'path'
 import { Storage } from '../src/Storage'
 import { Folder, Path, sleep } from '@secjs/utils'
 import { existsSync, promises, readdirSync } from 'fs'
-import { join } from 'path'
-import { tmpdir } from 'os'
 
 describe('\n Storage Local Class', () => {
   let storage: Storage = null
@@ -11,8 +10,6 @@ describe('\n Storage Local Class', () => {
   const bigContent = Buffer.alloc(Math.max(0, 1024 * 1024 * 200 - 2), 'l')
 
   beforeEach(async () => {
-    await new Config().load()
-
     storage = new Storage()
   })
 

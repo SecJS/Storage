@@ -8,8 +8,7 @@
  */
 
 import { S3 } from 'aws-sdk'
-import { File } from '@secjs/utils'
-import { Config } from '@secjs/config'
+import { File, Config } from '@secjs/utils'
 import { InternalServerException } from '@secjs/exceptions'
 import { DriverContract } from '../Contracts/DriverContract'
 

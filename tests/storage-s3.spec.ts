@@ -1,6 +1,5 @@
 import { join } from 'path'
 import { tmpdir } from 'os'
-import { Config } from '@secjs/config'
 import { Storage } from '../src/Storage'
 import { promises, readdirSync } from 'fs'
 
@@ -11,8 +10,6 @@ describe('\n Storage S3 Class', () => {
   const bigContent = Buffer.alloc(Math.max(0, 1024 * 1024 - 2), 'l')
 
   beforeEach(async () => {
-    await new Config().load()
-
     storage = new Storage().disk('s3')
   })
 

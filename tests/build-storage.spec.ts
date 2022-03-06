@@ -1,5 +1,4 @@
 import { existsSync } from 'fs'
-import { Config } from '@secjs/config'
 import { Storage } from '../src/Storage'
 import { Folder, Path } from '@secjs/utils'
 import { LocalDriver } from '../src/Drivers/LocalDriver'
@@ -10,8 +9,6 @@ describe('\n Build Drive Storage Class', () => {
   const bigContent = Buffer.alloc(Math.max(0, 1024 * 1024 * 200 - 2), 'l')
 
   beforeEach(async () => {
-    await new Config().load()
-
     storage = new Storage()
   })
 

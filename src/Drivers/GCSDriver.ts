@@ -7,14 +7,13 @@
  * file that was distributed with this source code.
  */
 
-import { Config } from '@secjs/config'
-import { File } from '@secjs/utils'
+import { join } from 'path'
+import { tmpdir } from 'os'
+import { promises } from 'fs'
+import { File, Config } from '@secjs/utils'
 import { Storage } from '@google-cloud/storage'
 import { InternalServerException } from '@secjs/exceptions'
 import { DriverContract } from '../Contracts/DriverContract'
-import { promises } from 'fs'
-import { join } from 'path'
-import { tmpdir } from 'os'
 
 export class GCSDriver implements DriverContract {
   private gcsClient: Storage

@@ -29,7 +29,7 @@ The intention behind this repository is to always maintain a `Storage` class to 
 > it keeps as dev dependency because one day `@secjs/core` will install everything once.
 
 ```bash
-npm install @secjs/env @secjs/utils @secjs/logger @secjs/contracts @secjs/exceptions
+npm install @secjs/env @secjs/utils @secjs/contracts @secjs/exceptions
 ```
 
 > Then you can install the package using:

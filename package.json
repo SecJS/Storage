@@ -22,7 +22,6 @@
   "devDependencies": {
     "@secjs/env": "1.2.5",
     "@secjs/exceptions": "1.0.4",
-    "@secjs/logger": "1.2.2",
     "@secjs/utils": "1.7.6",
     "@types/jest": "27.0.1",
     "@types/mime-types": "2.1.1",

@@ -9,7 +9,7 @@
   "homepage": "https://github.com/secjs/SecJS#readme",
   "scripts": {
     "build": "tsc",
-    "test": "NODE_ENV= jest --verbose",
+    "test": "NODE_ENV= NODE_TS=true jest --verbose",
     "test:debug": "DEBUG=* jest --verbose",
     "lint:fix": "eslint \"{src,tests}/**/*.ts\" --fix"
   },
